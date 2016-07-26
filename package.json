@@ -6,7 +6,7 @@
   "directories": {
   },
   "scripts": {
-    "test": "gulp",
+    "test": "elm-make test/TestRunner.elm --output target/test.js --warn && node target/test.js",
     "itest": "./node_modules/.bin/wdio wdio.conf.js"
   },
   "author": "",

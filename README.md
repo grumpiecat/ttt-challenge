@@ -1,13 +1,14 @@
 #Tic Tac Toe in Elm
 
+
 elm-package install
 npm install
 
 Run tests once:
-    node target/test.js
+    npm test
 
 Run tests and watch files for changes:
-    npm test
+    node target/test.js
 
 Run integration tests
 

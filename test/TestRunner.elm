@@ -6,8 +6,10 @@ import MainTest
 
 tests : List Test
 tests =
-    [ BoardTest.boardTests
-    , MainTest.mainTests ]
+    [ MainTest.modelTests
+    , MainTest.updateTests
+    , BoardTest.modelTests
+    , BoardTest.viewTests ]
 
 main : Program Never
 main =
