@@ -1,12 +1,16 @@
-module Main exposing (..)
+module TestRunner exposing (..)
 
 import ElmTest exposing (..)
-import Board
+import BoardTest
+import MainTest
 
-tests : Test
+tests : List Test
 tests =
-    Board.tests
+    [ MainTest.modelTests
+    , MainTest.updateTests
+    , BoardTest.modelTests
+    , BoardTest.viewTests ]
 
 main : Program Never
 main =
-    runSuite tests
+    runSuite (suite "All Tests" tests)
