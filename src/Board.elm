@@ -16,6 +16,14 @@ newBoard : Array String
 newBoard =
   initialize boardSize (\n -> (toString n))
 
+marker : String
+marker = "X"
+
+spaceIsFilled : Int -> CurrentBoard -> Bool
+spaceIsFilled space board =
+  ((get space board) == Just marker)
+
+
 -- Update
 
 type Msg
@@ -40,17 +48,18 @@ getRows filledRows thisRow numRows model =
 getSpaces : List (Html Msg) -> Int -> Int -> Int -> CurrentBoard -> List (Html Msg)
 getSpaces cells thisRow thisCol numCols model =
     if thisCol == numCols then cells
-      else
-        let cellID: Int
-            cellID = thisRow * numCols + thisCol
-        in
-          getSpaces
-            (cells ++ [td [] [ (getButton cellID model) ] ])
-            thisRow (thisCol + 1) numCols model
+    else
+      let
+        cellID : Int
+        cellID = thisRow * numCols + thisCol
+      in
+      getSpaces (cells ++ [td [] [ getSpaceInnerHTML cellID model ]]) thisRow (thisCol + 1) numCols model
 
-getButton : Int -> CurrentBoard -> Html Msg
-getButton cellID model =
-  button [ (attribute "class" "open-space"), onClick (Mark cellID) ] [ (text (getSpaceText cellID model)) ]
+getSpaceInnerHTML : Int -> CurrentBoard -> Html Msg
+getSpaceInnerHTML cellID model =
+  if (spaceIsFilled cellID model)
+  then div [(attribute "id" ("space-" ++ (toString cellID)))] [(text (getSpaceText cellID model))]
+  else button [(attribute "id" ("space-" ++ (toString cellID))), onClick (Mark cellID)] [(text (getSpaceText cellID model))]
 
 getSpaceText : Int -> CurrentBoard -> String
 getSpaceText space model =
