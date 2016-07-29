@@ -1,15 +1,14 @@
 module TestRunner exposing (..)
 
 import ElmTest exposing (..)
-import BoardTest
+import BoardViewTest
 import MainTest
 
 tests : List Test
 tests =
     [ MainTest.modelTests
     , MainTest.updateTests
-    , BoardTest.modelTests
-    , BoardTest.viewTests ]
+    , BoardViewTest.viewTests ]
 
 main : Program Never
 main =

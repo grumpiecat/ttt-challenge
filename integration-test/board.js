@@ -1,25 +1,30 @@
 var assert = require("assert");
 
 describe("Game Board", function() {
+  var playerOne = "X";
+  var playerTwo = "O";
+
   beforeEach(function() {
       browser.url("http://localhost:8000/src/Main.elm")
   });
 
   it("displays button if space is empty", function () {
-    assert.deepEqual(browser.getTagName(".open-space"), Array(9).fill("button"));
+    assert.deepEqual(browser.getTagName("#space-1"), "button");
   });
 
   describe("user clicks on open space", function() {
-    it("changes the text of that space to 'X'", function () {
-      browser.click(".open-space");
+    it("changes the text of that space to the active player marker", function () {
+      browser.click("#space-3");
+      assert.equal(playerOne, browser.getText("#space-3"));
 
-      assert.equal("X", browser.getText(".open-space")[0]);
+      browser.click("#space-2");
+      assert.equal(playerTwo, browser.getText("#space-2"));
     });
 
-    xit("changes the element so it is no longer a button", function () {
-      assert.equal("button", browser.getTagName(".open-space")[0]);
-      browser.click(".open-space");
-      assert.notEqual("button", browser.getTagName(".open-space")[0]);
+    it("changes the element so it is no longer a button", function () {
+      assert.equal("button", browser.getTagName("#space-6"));
+      browser.click("#space-6");
+      assert.notEqual("button", browser.getTagName("#space-6"));
     });
   });
 });
