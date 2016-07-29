@@ -1,6 +1,9 @@
 var assert = require("assert");
 
 describe("Game Board", function() {
+  var playerOne = "X";
+  var playerTwo = "O";
+
   beforeEach(function() {
       browser.url("http://localhost:8000/src/Main.elm")
   });
@@ -10,10 +13,12 @@ describe("Game Board", function() {
   });
 
   describe("user clicks on open space", function() {
-    it("changes the text of that space to 'X'", function () {
+    it("changes the text of that space to the active player marker", function () {
       browser.click("#space-3");
+      assert.equal(playerOne, browser.getText("#space-3"));
 
-      assert.equal("X", browser.getText("#space-3"));
+      browser.click("#space-2");
+      assert.equal(playerTwo, browser.getText("#space-2"));
     });
 
     it("changes the element so it is no longer a button", function () {

@@ -4,9 +4,7 @@ import Html exposing (..)
 import Html.App
 import Array exposing (..)
 
-import Board
-
--- Main
+import BoardView
 
 main : Program Never
 main = Html.App.beginnerProgram
@@ -15,23 +13,52 @@ main = Html.App.beginnerProgram
   , view = view
   }
 
-model : Array String
-model = Board.newBoard
-
 -- Model
 
-type alias Model = Array String
+type alias Model =
+  {
+    boardSize : Int
+  , boardState : Array String
+  , playerOneMarker : String
+  , playerTwoMarker : String
+  }
 
-update : Board.Msg -> Model -> Model
+model : Model
+model =
+  {
+    boardSize = 3
+  , boardState = (repeat (3 * 3) "")
+  , playerOneMarker = "X"
+  , playerTwoMarker = "O"
+  }
+
+-- Update
+
+type alias Msg =
+  BoardView.Msg
+
+update : Msg -> Model -> Model
 update message model =
   case message of
-    Board.Mark space -> set space "X" model
+    BoardView.Mark space ->
+      let activePlayerMarker = activePlayer model.boardState model.playerOneMarker model.playerTwoMarker
+      in { model | boardState = (set space activePlayerMarker model.boardState) }
+
+activePlayer : Array String -> String -> String -> String
+activePlayer board playerOneMarker playerTwoMarker =
+  let oneCount : Int
+      oneCount = board |> filter (\n -> (n == playerOneMarker)) |> length
+
+      twoCount : Int
+      twoCount = board |> filter (\n -> (n == playerTwoMarker)) |> length
+  in
+    if (twoCount < oneCount) then playerTwoMarker else playerOneMarker
 
 -- View
 
-view : Model -> Html Board.Msg
+view : Model -> Html BoardView.Msg
 view model =
   div []
-      [ h1 [] [text "Tic Tac Toe!"]
-      , (Board.getBoardView model 3)
+      [h1 [] [text "Tic Tac Toe!"]
+      , (BoardView.getBoard model.boardSize model.boardState)
       ]
