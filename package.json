@@ -7,7 +7,10 @@
   },
   "scripts": {
     "test": "elm-make test/TestRunner.elm --output target/test.js --warn && node target/test.js",
-    "itest": "./node_modules/.bin/wdio wdio.conf.js"
+    "itest": "./node_modules/.bin/wdio wdio.conf.js",
+	"start": "webpack-dev-server --hot --inline --content-base src/",
+    "build": "rimraf dist && webpack",
+    "watch": "webpack --watch"
   },
   "author": "",
   "license": "ISC",
@@ -15,6 +18,25 @@
     "gulp": "^3.9.1",
     "gulp-shell": "^0.5.2",
     "wdio-mocha-framework": "^0.3.10",
-    "webdriverio": "^4.2.3"
+    "webdriverio": "^4.2.3",
+    "autoprefixer": "^6.3.6",
+    "bootstrap-sass": "^3.3.6",
+    "copy-webpack-plugin": "^3.0.1",
+    "css-loader": "^0.23.1",
+    "elm": "^0.17.0",
+    "elm-hot-loader": "^0.3.2",
+    "elm-webpack-loader": "^3.0.3",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "file-loader": "^0.8.5",
+    "html-webpack-plugin": "^2.17.0",
+    "node-sass": "^3.7.0",
+    "postcss-loader": "^0.9.1",
+    "rimraf": "^2.5.2",
+    "sass-loader": "^3.2.0",
+    "style-loader": "^0.13.1",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.13.1",
+    "webpack-dev-server": "^1.14.1",
+    "webpack-merge": "^0.13.0"
   }
 }
