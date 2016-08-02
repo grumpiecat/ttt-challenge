@@ -1,14 +1,19 @@
 module TestRunner exposing (..)
 
 import ElmTest exposing (..)
-import BoardViewTest
-import MainTest
+import ModelTest
+import UpdateTest
+import ViewTest
+import GameTest
 
 tests : List Test
 tests =
-    [ MainTest.modelTests
-    , MainTest.updateTests
-    , BoardViewTest.viewTests ]
+    [
+      ModelTest.modelTests
+    , UpdateTest.updateTests
+    , ViewTest.viewTests
+    , GameTest.gameTests
+    ]
 
 main : Program Never
 main =
