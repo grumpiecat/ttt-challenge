@@ -5,7 +5,7 @@ describe("Game Board", function() {
   var playerTwo = "O";
 
   beforeEach(function() {
-      browser.url("http://localhost:8000/src/Main.elm")
+      browser.url("http://localhost:8080")
   });
 
   describe("game is active", function() {

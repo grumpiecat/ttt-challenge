@@ -14,21 +14,22 @@ view model =
   div []
     [
       h1 [] [text "Tic Tac Toe!"]
-    , (if (gameOver model)
-       then h1 [(attribute "id" "game-over-banner")] [text "Game Over."]
-       else (getBoard model))
+    , (getBoard model)
+    , div [(attribute "id" "game-over-banner"),
+          (style [("visibility", (if (gameOver model) then "visible" else "hidden"))])]
+          [text "Game Over."]
     ]
 
 getBoard : Model -> Html Action
 getBoard model =
-  table [ attribute "id" "game-newBoard" ] [
+  table [ attribute "id" "game-board" ] [
     tbody [] (getRowElements [] 0 model)
   ]
 
 getRowElements : List (Html Action) -> Int -> Model -> List (Html Action)
 getRowElements filledRows thisRow model =
   if thisRow == model.sideLength then filledRows
-    else getRowElements (filledRows ++ [tr [] [td [] (getSpaces [] thisRow 0 model)]])
+    else getRowElements (filledRows ++ [tr [] (getSpaces [] thisRow 0 model)])
       (thisRow + 1) model
 
 getSpaces : List (Html Action) -> Int -> Int -> Model -> List (Html Action)
@@ -41,9 +42,12 @@ getSpaceInnerHTML : Int -> Int -> Model -> Html Action
 getSpaceInnerHTML col row model =
   let cellID = row * model.sideLength + col in
   if (String.isEmpty (getSpaceText cellID model.boardState))
-  then button [(attribute "id" ("space-" ++ (toString cellID))), onClick (Mark col row)]
+  then button [(attribute "id" ("space-" ++ (toString cellID))),
+               (attribute "class" "btn btn-default"),
+               onClick (Mark col row)]
               [(text (getSpaceText cellID model.boardState))]
-  else div [(attribute "id" ("space-" ++ (toString cellID)))]
+  else div [(attribute "id" ("space-" ++ (toString cellID)))
+           ,(attribute "class" "filled-space")]
            [text (getSpaceText cellID model.boardState)]
 
 getSpaceText : Int -> Array (Array String) -> String
