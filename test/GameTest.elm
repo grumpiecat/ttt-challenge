@@ -3,7 +3,6 @@ module GameTest exposing (..)
 import ElmTest exposing (..)
 import Array exposing (..)
 import Game exposing (..)
--- import Debug exposing (..)
 
 p1 : String
 p1 = "X"
@@ -90,4 +89,16 @@ gameTests =
 
     , test "returns true if player two is the winner on the diagonal starting at the top right corner"
         <| assert (gameOver { mockModel | boardState = (map fromList (fromList [["", "", p2], ["", p2, ""], [p2, "", ""]]))})
+
+    , test "returns false if vertical column is filled but not won"
+        <| assertEqual False (gameOver { mockModel | boardState = (map fromList (fromList [[p1, "", ""], [p2, "", ""], [p2, "", ""]]))})
+
+    , test "returns false if horizontal row is filled but not won"
+        <| assertEqual False (gameOver { mockModel | boardState = (map fromList (fromList [[p1, p1, p2], ["", "", ""], [p2, "", ""]]))})
+
+    , test "returns false if diagonal row is filled but not won"
+        <| assertEqual False (gameOver { mockModel | boardState = (map fromList (fromList [[p1, "", p1], ["", p2, ""], [p2, "", p2]]))})
+
+    , test "returns true if no winner but board is full (cat's game)"
+        <| assert (gameOver { mockModel | boardState = (map fromList (fromList [[p1, p2, p1], [p2, p2, p1], [p2, p1, p2]]))})
     ]

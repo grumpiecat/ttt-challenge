@@ -36,7 +36,7 @@ updateTests =
         (fromList (List.map fromList [[model.playerTwoMarker, model.playerOneMarker, ""], ["", "" , ""], ["", "", ""]]))
         (fillSpace 0 0 model.playerTwoMarker (fromList (List.map fromList [["", model.playerOneMarker, ""], ["", "" , ""], ["", "", ""]])))
 
-  , test "Mark message changes the given spot in an empty board to player one"
+  , test "Mark action changes the given spot in an empty board to player one"
       <| assertEqual
         (fromList (List.map fromList [["", "", model.playerOneMarker], ["", "", ""], ["", "", ""]]))
         (update (Mark 2 0) model).boardState

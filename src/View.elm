@@ -1,21 +1,22 @@
 module View exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (attribute)
+import Html.Attributes exposing (attribute, style)
 import Html.Events exposing (onClick)
 import Actions exposing (..)
 import Model exposing (Model)
 import Array exposing (..)
 import String exposing (isEmpty)
+import Game exposing (gameOver)
 
 view : Model -> Html Action
 view model =
   div []
     [
       h1 [] [text "Tic Tac Toe!"]
-    , h1 [(attribute "id" "game-over-banner"), (attribute "hidden" "true")]
-         [text "Game Over."]
-    , (getBoard model)
+    , (if (gameOver model)
+       then h1 [(attribute "id" "game-over-banner")] [text "Game Over."]
+       else (getBoard model))
     ]
 
 getBoard : Model -> Html Action

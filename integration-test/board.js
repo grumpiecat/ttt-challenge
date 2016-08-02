@@ -9,7 +9,7 @@ describe("Game Board", function() {
   });
 
   describe("game is active", function() {
-    xit("game-over message is not visible", function() {
+    it("game-over message is not visible", function() {
         assert.equal(false, browser.isVisible("#game-over-banner"));
     });
 
@@ -31,12 +31,6 @@ describe("Game Board", function() {
         browser.click("#space-6");
         assert.notEqual("button", browser.getTagName("#space-6"));
       });
-    });
-  });
-
-  describe("game over", function() {
-    xit("displays game over message", function() {
-        assert(browser.isVisible("#game-over-banner"));
     });
   });
 });

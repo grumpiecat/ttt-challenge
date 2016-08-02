@@ -9,7 +9,6 @@ type alias Model =
   {
     sideLength : Int
   , boardState : BoardState
-  , gameOver : Bool
   , playerOneMarker : String
   , playerTwoMarker : String
   }
@@ -22,7 +21,6 @@ model =
   {
     sideLength = sideLength
   , boardState = ((repeat sideLength << repeat sideLength) "")
-  , gameOver = False
   , playerOneMarker = "X"
   , playerTwoMarker = "O"
   }

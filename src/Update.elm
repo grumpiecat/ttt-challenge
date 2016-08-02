@@ -10,8 +10,6 @@ update message model =
   case message of
     Mark col row ->
       { model | boardState = (fillSpace col row activePlayerMarker model.boardState) }
-    -- EndGame ->
-    --   { model | gameOver = False }
 
 fillSpace : Int -> Int -> String -> Array (Array String) -> Array (Array String)
 fillSpace colNum rowNum marker boardState =

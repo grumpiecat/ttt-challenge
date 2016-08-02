@@ -21,9 +21,6 @@ modelTests =
     , test "boardState initialized with number of columns (in each row) equal to the sideLength)"
         <| assert (List.all (\n -> (length n) == sideLength) (toList model.boardState))
 
-    , test "gameOver initialized as False"
-        <| assertEqual False model.gameOver
-
     , test "playerOneMarker initialize to X"
         <| assertEqual model.playerOneMarker "X"
 

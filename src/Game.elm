@@ -3,6 +3,7 @@ module Game exposing (..)
 import Array exposing (..)
 import Maybe exposing (andThen)
 import Array.Extra
+import String
 
 type alias Model =
   {
@@ -17,7 +18,7 @@ type alias PlayerMarker
 
 gameOver : Model -> Bool
 gameOver model =
-  horizontalWinner model || verticalWinner model || diagonalWinner model
+  horizontalWinner model || verticalWinner model || diagonalWinner model || catsGame model
 
 horizontalWinner : Model -> Bool
 horizontalWinner model =
@@ -34,9 +35,14 @@ diagonalWinner model =
   sliceWinner model (toList (getDiagonalOne model.boardState 0 empty))
   || sliceWinner model (toList (getDiagonalTwo model.boardState 0 empty))
 
+catsGame : Model -> Bool
+catsGame model =
+  let flattenedList = (map toList model.boardState) |> toList |> List.concat
+  in List.all (\x -> (not (String.isEmpty x))) flattenedList
+
 sliceWinner : Model -> List String -> Bool
-sliceWinner model =
-  (List.all (\n -> n == model.playerOneMarker || n == model.playerTwoMarker))
+sliceWinner model board =
+  (List.all (\x -> x == model.playerOneMarker) board) || (List.all (\x -> x == model.playerTwoMarker) board)
 
 transpose : Array (Array a) -> Array (Array a)
 transpose board =
