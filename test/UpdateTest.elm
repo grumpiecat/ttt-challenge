@@ -22,7 +22,7 @@ updateTests =
 
     , test "activePlayer returns player two marker if there are more player one markers on the board"
         <| assertEqual
-          (activePlayer ((update (Mark 0 0) model).boardState) model.playerOneMarker model.playerTwoMarker)
+          (activePlayer (fromList (List.map fromList [["", "", ""], ["", "", ""], [model.playerOneMarker, "", ""]])) model.playerOneMarker model.playerTwoMarker)
           model.playerTwoMarker
 
   -- test fillSpace returns original board if given an invalid space
@@ -36,8 +36,8 @@ updateTests =
         (fromList (List.map fromList [[model.playerTwoMarker, model.playerOneMarker, ""], ["", "" , ""], ["", "", ""]]))
         (fillSpace 0 0 model.playerTwoMarker (fromList (List.map fromList [["", model.playerOneMarker, ""], ["", "" , ""], ["", "", ""]])))
 
-  , test "Mark action changes the given spot in an empty board to player one"
+  , test "Mark action changes the given spot in an empty board to player one and automatically places AI Marker in the first available spot"
       <| assertEqual
-        (fromList (List.map fromList [["", "", model.playerOneMarker], ["", "", ""], ["", "", ""]]))
+        (fromList (List.map fromList [[model.playerTwoMarker,"",model.playerOneMarker], ["","",""], ["","",""]]))
         (update (Mark 2 0) model).boardState
   ]

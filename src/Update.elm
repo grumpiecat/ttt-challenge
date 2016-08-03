@@ -3,13 +3,15 @@ module Update exposing (..)
 import Actions exposing (..)
 import Model exposing (Model)
 import Array exposing (..)
+import AI exposing (placeAI)
 
 update : Action -> Model -> Model
 update message model =
   let activePlayerMarker = activePlayer model.boardState model.playerOneMarker model.playerTwoMarker in
   case message of
     Mark col row ->
-      { model | boardState = (fillSpace col row activePlayerMarker model.boardState) }
+      let playerMove = (fillSpace col row activePlayerMarker model.boardState) in
+      { model | boardState = placeAI (activePlayer playerMove model.playerOneMarker model.playerTwoMarker) playerMove }
 
 fillSpace : Int -> Int -> String -> Array (Array String) -> Array (Array String)
 fillSpace colNum rowNum marker boardState =
