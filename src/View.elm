@@ -11,15 +11,47 @@ import Board exposing (activePlayer)
 
 view : Model -> Html Msg
 view model =
-  div [] [
-    h1 [] [text "Tic Tac Toe!"]
-    , div [] [
-        div [ (attribute "id" "game-over-banner"),
-            (style [("visibility", (if (gameOver model.boardState) then "visible" else "hidden"))])]
-            [text "Game Over."]
-      , (getBoard model)
+  if (model.activeGame == True) then
+    div [] [
+      h1 [] [text "Tic Tac Toe!"]
+      , div [(attribute "id" "game-type-message")]
+            [(gameTypeMessage model)]
+      , div [] [
+          if (gameOver model.boardState) then
+          div [ (attribute "id" "game-over-banner")]
+              [text "Game Over."]
+          else (getBoard model)
+      ]
     ]
-  ]
+  else splashScreen model
+
+splashScreen : Model -> Html Msg
+splashScreen model =
+    div [] [
+        h1 [] [text "Please choose a game type:"]
+      , div [(attribute "id" "game-type-choice-container")] [
+        button [
+          (attribute "class" "game-type-choice"),
+          (attribute "id" "player-player"),
+          onClick BeginPlayerPlayer
+        ] [text "Player v. Player"]
+      , button [
+          (attribute "class" "game-type-choice"),
+          (attribute "id" "player-ai"),
+          onClick BeginPlayerAI
+        ] [text "Player v. Computer"]
+      ]
+    ]
+
+gameTypeMessage : Model -> Html Msg
+gameTypeMessage model =
+  if (model.gameType == playerPlayerType)
+  then h3 [] [text "Game Type: Two-Player"]
+  else
+      div [] [
+        h3 [] [text "Game Type: Player vs. Computer"],
+        h4 [] [text "Please give the computer time to choose its spot."]]
+
 
 getBoard : Model -> Html Msg
 getBoard model =
@@ -37,19 +69,27 @@ getSpaces : List (Html Msg) -> Int -> Int -> Model -> List (Html Msg)
 getSpaces cells thisRow thisCol model =
   if thisCol == model.sideLength then cells
   else
-    getSpaces (cells ++ [td [] [getSpaceInnerHTML thisCol thisRow model]]) thisRow (thisCol + 1) model
+    getSpaces (cells ++ [td [] [getSpaceInnerHTML thisRow thisCol model]]) thisRow (thisCol + 1) model
 
 getSpaceInnerHTML : Int -> Int -> Model -> Html Msg
-getSpaceInnerHTML col row model =
+getSpaceInnerHTML row col model =
   let cellID = row * model.sideLength + col in
   if (String.isEmpty (getSpaceText cellID model.boardState))
-  then button [(attribute "id" ("space-" ++ (toString cellID))),
-               (attribute "class" "btn btn-default"),
-               onClick (Mark col row)]
-              [(text (getSpaceText cellID model.boardState))]
-  else div [(attribute "id" ("space-" ++ (toString cellID)))
-           ,(attribute "class" "filled-space")]
-           [text (getSpaceText cellID model.boardState)]
+  then
+    button [
+      (attribute "id" ("space-" ++ (toString cellID))),
+      (attribute "class" "board-space"),
+      onClick
+        (if (model.gameType == playerPlayerType)
+        then (Mark row col)
+        else (PlayRound row col))
+    ]
+    [(text (getSpaceText cellID model.boardState))]
+  else
+    div [
+      (attribute "id" ("space-" ++ (toString cellID)))
+     ,(attribute "class" "filled-space")]
+      [text (getSpaceText cellID model.boardState)]
 
 getSpaceText : Int -> Array (Array String) -> String
 getSpaceText cellNum boardState =

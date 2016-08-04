@@ -26,4 +26,14 @@ modelTests =
 
     , test "playerTwoMarker initialize to O"
         <| assertEqual model.playerTwoMarker "O"
+
+    , test "player vs player game is game-type 1"
+        <| assertEqual playerPlayerType 1
+
+    , test "player vs AI game is game-type 2"
+        <| assertEqual playerAIType 2
+
+    , test "gameType is initialized"
+        <| assert ((model.gameType == playerPlayerType) ||
+                   (model.gameType == playerAIType))
     ]

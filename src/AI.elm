@@ -6,7 +6,6 @@ import Game exposing (winner, gameOver, Board)
 import Maybe exposing (withDefault)
 import List.Extra
 import Model exposing (model)
-import Debug
 
 p1 : String
 p1 = model.playerOneMarker
@@ -19,7 +18,7 @@ chooseMove aiMarker board =
   let scores = (scoredSpaces aiMarker board) in
     case (List.Extra.maximumBy snd (scoredSpaces aiMarker board)) of
       Just choice -> fst choice
-      Nothing -> (0,0) 
+      Nothing -> (0,0)
 
 scoredSpaces : String -> Board -> List ((Int, Int), Int)
 scoredSpaces aiMarker board =
