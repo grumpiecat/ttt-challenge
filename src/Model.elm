@@ -20,6 +20,7 @@ type alias Model =
   , playerOneMarker : String
   , playerTwoMarker : String
   , gameType : GameType
+  , activeGame : Bool
   }
 
 sideLength : Int
@@ -36,12 +37,15 @@ model =
   , boardState = ((repeat sideLength << repeat sideLength) "")
   , playerOneMarker = "X"
   , playerTwoMarker = "O"
-  , gameType = playerPlayerType
+  , gameType = playerAIType
+  , activeGame = False
   }
 
 type Msg
-  = PlayRound Int Int
-  | Mark Int Int
+  = Mark Int Int
+  | PlayRound Int Int
+  | BeginPlayerPlayer
+  | BeginPlayerAI
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
