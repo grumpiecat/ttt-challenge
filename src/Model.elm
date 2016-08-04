@@ -16,6 +16,10 @@ type alias Model =
 sideLength : Int
 sideLength = 3
 
+init : (Model, Cmd Msg)
+init =
+  (model, Cmd.none)
+
 model : Model
 model =
   {
@@ -24,3 +28,10 @@ model =
   , playerOneMarker = "X"
   , playerTwoMarker = "O"
   }
+
+type Msg
+  = Mark Int Int
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+  Sub.none
