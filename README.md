@@ -1,10 +1,13 @@
 #Tic Tac Toe in Elm
 
-    elm-package install
-    npm install
+###Dependencies
+####[Elm 0.17.0](http://elm-lang.org/install)
+    
+    npm install -g elm@0.17.0
 
 ###To Run Program Locally:
-
+    elm-package install
+    npm install
     npm start
 
 then navigate to ```http://localhost:8080```
@@ -13,7 +16,7 @@ then navigate to ```http://localhost:8080```
 
     npm test
 
-###To run integration tests:
+###To run integration tests (in Firefox):
 
 Make sure program is running locally (```npm start```)
 
