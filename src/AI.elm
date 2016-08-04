@@ -1,25 +1,52 @@
 module AI exposing (..)
 
 import Array exposing (..)
-import String
+import Board exposing (..)
+import Game exposing (winner, gameOver, Board)
+import Maybe exposing (withDefault)
+import List.Extra
+import Model exposing (model)
+import Debug
 
-placeAI : String -> Array (Array String) -> Array (Array String)
-placeAI marker board =
-  let openSpaces = availableSpaces board 0 0 [] |> List.reverse |> fromList in
-  case (get 0 openSpaces) of
-  Just tup ->
-    case (get (fst tup) board) of
-    Just row -> (set (fst tup) (set (snd tup) marker row) board)
-    Nothing -> board
-  Nothing -> board
+p1 : String
+p1 = model.playerOneMarker
 
-availableSpaces : Array (Array String) -> Int -> Int -> List (Int, Int) -> List (Int, Int)
-availableSpaces board rowNum colNum foundSpaces =
-  case (get rowNum board) of
-  Just row ->
-    case (get colNum row) of
-    Just val -> if (String.isEmpty val)
-                then (availableSpaces board rowNum (colNum + 1) ((rowNum, colNum) :: foundSpaces))
-                else (availableSpaces board rowNum (colNum + 1) foundSpaces)
-    Nothing -> availableSpaces board (rowNum + 1) 0 foundSpaces
-  Nothing -> foundSpaces
+p2 : String
+p2 = model.playerTwoMarker
+
+chooseMove : String -> Board -> (Int, Int)
+chooseMove aiMarker board =
+  let scores = (scoredSpaces aiMarker board) in
+    case (List.Extra.maximumBy snd (scoredSpaces aiMarker board)) of
+      Just choice -> fst choice
+      Nothing -> (0,0) 
+
+scoredSpaces : String -> Board -> List ((Int, Int), Int)
+scoredSpaces aiMarker board =
+  let scores = (toList (map (\x -> minimax aiMarker x 0) (hypotheticalBoards board))) in
+    let spaces = (toList (availableSpaces board 0 0 [])) in
+      List.Extra.zip spaces scores
+
+minimax : String -> Board -> Int -> Int
+minimax player board depth =
+  let score = gameOutcome player board depth in
+  if (gameOver board) then score
+  else
+    if (activePlayer board p1 p2) == player then
+      withDefault 0 (List.maximum (toList (map (\hypBoard -> (minimax player hypBoard (depth + 1))) (hypotheticalBoards board))))
+    else
+      withDefault 0 (List.minimum (toList (map (\hypBoard -> (minimax player hypBoard (depth + 1))) (hypotheticalBoards board))))
+
+
+hypotheticalBoards : Board -> Array (Array (Array String))
+hypotheticalBoards currentBoard =
+  let openSpaces = (availableSpaces currentBoard 0 0 []) in
+    map (\x -> fillSpace (fst x) (snd x) (activePlayer currentBoard p1 p2) currentBoard) openSpaces
+
+gameOutcome : String -> Board -> Int -> Int
+gameOutcome player board depth =
+  case (winner board) of
+  Just winner ->
+    if (winner == player) then (10 - depth)
+    else depth - 10
+  Nothing -> 0

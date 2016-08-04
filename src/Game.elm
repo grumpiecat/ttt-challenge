@@ -3,48 +3,61 @@ module Game exposing (..)
 import Array exposing (..)
 import Maybe exposing (andThen)
 import Array.Extra
+import List.Extra
 import String
 
-type alias Model =
-  {
-    sideLength : Int
-  , boardState : Array (Array String)
-  , playerOneMarker : String
-  , playerTwoMarker : String
-  }
+p1 : String
+p1 = "X"
+
+p2 : String
+p2 = "O"
+
+type alias Board
+  = Array (Array String)
 
 type alias PlayerMarker
   = String
 
-gameOver : Model -> Bool
-gameOver model =
-  horizontalWinner model || verticalWinner model || diagonalWinner model || catsGame model
+gameOver : Board -> Bool
+gameOver board =
+  if (catsGame board) then True else
+  case (winner board) of
+  Just player -> True
+  Nothing ->  False
 
-horizontalWinner : Model -> Bool
-horizontalWinner model =
-  let listifiedBoard = ((map toList model.boardState) |> toList) in
-  (List.any (sliceWinner model) listifiedBoard)
+winner : Board -> Maybe PlayerMarker
+winner board =
+  Maybe.oneOf [horizontalWinner board, verticalWinner board, diagonalWinner board]
 
-verticalWinner : Model -> Bool
-verticalWinner model  =
-  let listifiedTransposedBoard = ((map toList (transpose model.boardState)) |> toList) in
-  (List.any (sliceWinner model) listifiedTransposedBoard)
+horizontalWinner : Board -> Maybe PlayerMarker
+horizontalWinner board =
+  let listifiedBoard = ((map toList board) |> toList) in
+  sliceWinner board listifiedBoard
 
-diagonalWinner : Model -> Bool
-diagonalWinner model =
-  sliceWinner model (toList (getDiagonalOne model.boardState 0 empty))
-  || sliceWinner model (toList (getDiagonalTwo model.boardState 0 empty))
+verticalWinner : Board -> Maybe PlayerMarker
+verticalWinner board  =
+  let listifiedTransposedBoard = ((map toList (transpose board)) |> toList) in
+  sliceWinner board listifiedTransposedBoard
 
-catsGame : Model -> Bool
-catsGame model =
-  let flattenedList = (map toList model.boardState) |> toList |> List.concat
+diagonalWinner : Board -> Maybe PlayerMarker
+diagonalWinner board =
+  sliceWinner board [(toList (getDiagonalOne board 0 empty))
+               ,(toList (getDiagonalTwo board 0 empty))]
+
+sliceWinner : Board -> List (List String) -> Maybe PlayerMarker
+sliceWinner board listifiedBoard =
+  case List.Extra.find
+    (\row -> ((List.all ((==) p1) row) || (List.all ((==) p2) row)))
+      listifiedBoard of
+  Just row -> (List.head row)
+  Nothing -> Nothing
+
+catsGame : Board -> Bool
+catsGame board =
+  let flattenedList = (map toList board) |> toList |> List.concat
   in List.all (\x -> (not (String.isEmpty x))) flattenedList
 
-sliceWinner : Model -> List String -> Bool
-sliceWinner model board =
-  (List.all (\x -> x == model.playerOneMarker) board) || (List.all (\x -> x == model.playerTwoMarker) board)
-
-transpose : Array (Array a) -> Array (Array a)
+transpose : Board -> Board
 transpose board =
   let
     firstRow = get 0 board
@@ -59,7 +72,7 @@ transpose board =
         in
           foldl step vector restRows
 
-getDiagonalOne : Array (Array a) -> Int -> Array a -> Array a
+getDiagonalOne : Board -> Int -> Array String -> Array String
 getDiagonalOne board currentRow diagonal =
   case (get currentRow board) of
   Just row ->
@@ -68,7 +81,7 @@ getDiagonalOne board currentRow diagonal =
       Nothing -> diagonal
   Nothing -> diagonal
 
-getDiagonalTwo : Array (Array a) -> Int -> Array a -> Array a
+getDiagonalTwo : Board -> Int -> Array String -> Array String
 getDiagonalTwo board currentRow diagonal =
   case (get currentRow board) of
   Just row ->

@@ -6,6 +6,7 @@ import UpdateTest
 import ViewTest
 import GameTest
 import AITest
+import BoardTest
 
 tests : List Test
 tests =
@@ -13,8 +14,10 @@ tests =
       ModelTest.modelTests
     , UpdateTest.updateTests
     , ViewTest.viewTests
-    , GameTest.gameTests
+    , GameTest.gameIsOver
+    , GameTest.boardWinner
     , AITest.aiTests
+    , BoardTest.boardTests
     ]
 
 main : Program Never

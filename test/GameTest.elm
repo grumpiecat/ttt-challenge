@@ -1,104 +1,103 @@
 module GameTest exposing (..)
 
 import ElmTest exposing (..)
+import BoardHelper exposing (..)
 import Array exposing (..)
 import Game exposing (..)
 
-p1 : String
-p1 = "X"
-
-p2 : String
-p2 = "O"
-
-mockModel : Model
-mockModel =
-  {
-    sideLength = 3
-  , boardState = ((repeat 3 << repeat 3) "")
-  , playerOneMarker = p1
-  , playerTwoMarker = p2
-  }
-
-replaceRow : Int -> Array String -> Model
-replaceRow row newRow =
-  { mockModel | boardState = (set row newRow mockModel.boardState) }
-
-gameTests : Test
-gameTests =
+gameIsOver : Test
+gameIsOver =
   suite "gameOver"
     [
-     test "returns false if there is no winner"
-        <| assert (not (gameOver mockModel))
+      test "returns false if there is no winner"
+        <| assert (not (gameOver (emptyBoard 3) ))
 
     , test "returns true if player one is the winner on the first row"
-        <| assert (gameOver (replaceRow 0 (fromList [p1, p1, p1])))
+        <| assert (gameOver (winnerRowOne p1))
 
     , test "returns true if player one is the winner on the second row"
-        <| assert (gameOver (replaceRow 1 (fromList [p1, p1, p1])))
+        <| assert (gameOver (winnerRowTwo p1))
 
     , test "returns true if player one is the winner on the third row"
-        <| assert (gameOver (replaceRow 2 (fromList [p1, p1, p1])))
+        <| assert (gameOver (winnerRowThree p1))
 
     , test "returns true if player two is the winner on the first row"
-        <| assert (gameOver (replaceRow 0 (fromList [p2, p2, p2])))
+        <| assert (gameOver (winnerRowOne p2))
 
     , test "returns true if player two is the winner on the second row"
-        <| assert (gameOver (replaceRow 1 (fromList [p2, p2, p2])))
+        <| assert (gameOver (winnerRowTwo p2))
 
     , test "returns true if player two is the winner on the third row"
-        <| assert (gameOver (replaceRow 2 (fromList [p2, p2, p2])))
+        <| assert (gameOver (winnerRowThree p2))
 
     , test "transpose transposes an array"
-        <| assertEqual (map fromList (fromList [[1,4,7], [2,5,8], [3,6,9]]))
-                       (transpose (map fromList (fromList [[1,2,3],[4,5,6],[7,8,9]])))
+        <| assertEqual (map fromList (fromList [["1","4","7"],["2","5","8"],["3","6","9"]]))
+                       (transpose (orderedNumberStrings))
 
     , test "returns true if player one is the winner on the first column"
-        <| assert (gameOver { mockModel | boardState = (map fromList (fromList [[p1, "", ""], [p1, "", ""], [p1, "", ""]]))})
+        <| assert (gameOver (winnerColOne p1))
 
     , test "returns true if player one is the winner on the second column"
-        <| assert (gameOver { mockModel | boardState = (map fromList (fromList [["", p1, ""], ["", p1, ""], ["", p1, ""]]))})
+        <| assert (gameOver (winnerColTwo p1))
 
     , test "returns true if player one is the winner on the third column"
-        <| assert (gameOver { mockModel | boardState = (map fromList (fromList [["", "", p1], ["", "", p1], ["", "", p1]]))})
+        <| assert (gameOver (winnerColThree p1))
 
     , test "returns true if player two is the winner on the first column"
-        <| assert (gameOver { mockModel | boardState = (map fromList (fromList [[p2, "", ""], [p2, "", ""], [p2, "", ""]]))})
+        <| assert (gameOver (winnerColOne p2))
 
     , test "returns true if player two is the winner on the second column"
-        <| assert (gameOver { mockModel | boardState = (map fromList (fromList [["", p2, ""], ["", p2, ""], ["", p2, ""]]))})
+        <| assert (gameOver (winnerColTwo p2))
 
     , test "returns true if player two is the winner on the third column"
-        <| assert (gameOver { mockModel | boardState = (map fromList (fromList [["", "", p2], ["", "", p2], ["", "", p2]]))})
+        <| assert (gameOver (winnerColThree p2))
 
     , test "getDiagonalOne returns diagonal of matrix starting at 0,0"
-        <| assertEqual (getDiagonalOne (map fromList (fromList [["1", "2", "3"], ["4", "5", "6"], ["7", "8", "9"]])) 0 (fromList []))
+        <| assertEqual (getDiagonalOne orderedNumberStrings 0 (fromList []))
                        (fromList ["1", "5", "9"])
 
     , test "returns true if player one is the winner on the diagonal starting at 0,0"
-        <| assert (gameOver { mockModel | boardState = (map fromList (fromList [[p1, "", ""], ["", p1, ""], ["", "", p1]]))})
+        <| assert (gameOver (winnerDiagonalOne p1))
 
     , test "returns true if player two is the winner on the diagonal starting at 0,0"
-        <| assert (gameOver { mockModel | boardState = (map fromList (fromList [[p2, "", ""], ["", p2, ""], ["", "", p2]]))})
+        <| assert (gameOver (winnerDiagonalOne p2))
 
     , test "getDiagonalTwo returns diagonal of matrix starting at the top right corner"
-        <| assertEqual (getDiagonalTwo (map fromList (fromList [["1", "2", "3"], ["4", "5", "6"], ["7", "8", "9"]])) 0 (fromList []))
+        <| assertEqual (getDiagonalTwo orderedNumberStrings 0 (fromList []))
                        (fromList ["3", "5", "7"])
 
     , test "returns true if player one is the winner on the diagonal starting at the top right corner"
-        <| assert (gameOver { mockModel | boardState = (map fromList (fromList [["", "", p1], ["", p1, ""], [p1, "", ""]]))})
+        <| assert (gameOver (winnerDiagonalTwo p1))
 
     , test "returns true if player two is the winner on the diagonal starting at the top right corner"
-        <| assert (gameOver { mockModel | boardState = (map fromList (fromList [["", "", p2], ["", p2, ""], [p2, "", ""]]))})
+        <| assert (gameOver (winnerDiagonalTwo p2))
 
     , test "returns false if vertical column is filled but not won"
-        <| assertEqual False (gameOver { mockModel | boardState = (map fromList (fromList [[p1, "", ""], [p2, "", ""], [p2, "", ""]]))})
+        <| assertEqual False (gameOver (makeBoard [[p1, "", ""], [p2, "", ""], [p2, "", ""]]))
 
     , test "returns false if horizontal row is filled but not won"
-        <| assertEqual False (gameOver { mockModel | boardState = (map fromList (fromList [[p1, p1, p2], ["", "", ""], [p2, "", ""]]))})
+        <| assertEqual False (gameOver (makeBoard [[p1, p1, p2], ["", "", ""], [p2, "", ""]]))
 
     , test "returns false if diagonal row is filled but not won"
-        <| assertEqual False (gameOver { mockModel | boardState = (map fromList (fromList [[p1, "", p1], ["", p2, ""], [p2, "", p2]]))})
+        <| assertEqual False (gameOver (makeBoard [[p1, "", p1], ["", p2, ""], [p2, "", p2]]))
 
     , test "returns true if no winner but board is full (cat's game)"
-        <| assert (gameOver { mockModel | boardState = (map fromList (fromList [[p1, p2, p1], [p2, p2, p1], [p2, p1, p2]]))})
+        <| assert (gameOver (catsGameBoard p1 p2))
+    ]
+
+boardWinner : Test
+boardWinner =
+  suite "winner"
+    [
+      test "returns nothing if there is no winner"
+        <| assertEqual Nothing (winner (emptyBoard 3))
+
+    , test "returns (maybe) marker of player who has won on a horizontal row"
+        <| assertEqual (Just p1) (winner (winnerRowTwo p1))
+
+    , test "returns (maybe) marker of player who has won on a vertical row"
+        <| assertEqual (Just p2) (winner (winnerColThree p2))
+
+    , test "returns (maybe) marker of player who has won on a diagonal row"
+        <| assertEqual (Just p1) (winner (winnerDiagonalTwo p1))
     ]

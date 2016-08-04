@@ -1,33 +1,16 @@
 module Update exposing (..)
 
-import Actions exposing (..)
-import Model exposing (Model)
+import Model exposing (..)
 import Array exposing (..)
-import AI exposing (placeAI)
+import String
+import AI
+import Board exposing (..)
 
-update : Action -> Model -> Model
+update : Msg -> Model -> (Model, Cmd Msg)
 update message model =
   let activePlayerMarker = activePlayer model.boardState model.playerOneMarker model.playerTwoMarker in
   case message of
     Mark col row ->
-      let playerMove = (fillSpace col row activePlayerMarker model.boardState) in
-      { model | boardState = placeAI (activePlayer playerMove model.playerOneMarker model.playerTwoMarker) playerMove }
-
-fillSpace : Int -> Int -> String -> Array (Array String) -> Array (Array String)
-fillSpace colNum rowNum marker boardState =
-  case (get rowNum boardState) of
-  Just row -> (set rowNum (set colNum marker row) boardState)
-  Nothing -> boardState
-
-activePlayer : Array (Array String) -> String -> String -> String
-activePlayer board playerOneMarker playerTwoMarker =
-  let oneCount : Int
-      oneCount = board |> flattenArray |> filter (\n -> (n == playerOneMarker)) |> length
-
-      twoCount : Int
-      twoCount = board |> flattenArray |> filter (\n -> (n == playerTwoMarker)) |> length
-  in if (twoCount < oneCount) then playerTwoMarker else playerOneMarker
-
-flattenArray : Array (Array a) -> Array a
-flattenArray twoDArr =
-  (map toList twoDArr) |> toList |> List.concat |> fromList
+      let playersChoiceBoard = fillSpace row col activePlayerMarker model.boardState in
+        let aiChoice = AI.chooseMove model.playerTwoMarker playersChoiceBoard in
+          { model | boardState = fillSpace (fst aiChoice) (snd aiChoice) model.playerTwoMarker playersChoiceBoard } ! []
