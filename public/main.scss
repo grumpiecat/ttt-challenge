@@ -2,6 +2,12 @@ $icon-font-path: '~bootstrap-sass/assets/fonts/bootstrap/';
 @import '~bootstrap-sass/assets/stylesheets/bootstrap/_mixins.scss';
 @import '~bootstrap-sass/assets/stylesheets/_bootstrap.scss';
 
+body {
+  background-color: rgb(52, 73, 94);
+  font-family: 'VT323', ;
+  text-align: center;
+}
+
 h1 {
   font-size: 7rem;
   margin: 0;
@@ -21,12 +27,6 @@ h1 {
   left: 50%;
   margin-right: -50%;
   transform: translate(-50%, -50%)
-}
-
-body {
-  background-color: rgb(52, 73, 94);
-  font-family: 'VT323', ;
-  text-align: center;
 }
 
 #game-type-choice-container {
@@ -73,6 +73,7 @@ body {
   transform: translate(-50%, -50%);
   width: 75%;
   height: 60%;
+  text-align: center;
 }
 
 .filled-space {
@@ -128,4 +129,12 @@ table tr td:first-child {
 
 table tr td:last-child {
   border-right: 0;
+}
+
+#start-new-game {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
 }

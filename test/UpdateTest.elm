@@ -16,7 +16,11 @@ updateTests : Test
 updateTests =
   suite "Update"
     [
-      test "BeginPlayerPlayer returns model with active game and correct game type"
+      test "StartNewGame returns model with empty board and game that is not yet active"
+        <| assert (((fst (update StartNewGame model)).activeGame == False)
+                  && ((fst (update StartNewGame { model | boardState = winnerRowOne p1 })).boardState == (BoardHelper.emptyBoard 3)))
+
+    , test "BeginPlayerPlayer returns model with active game and correct game type"
         <| assert (((fst (update BeginPlayerPlayer model)).activeGame == True)
                   && ((fst (update BeginPlayerPlayer model)).gameType == playerPlayerType))
 

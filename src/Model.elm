@@ -26,6 +26,10 @@ type alias Model =
 sideLength : Int
 sideLength = 3
 
+emptyBoard : Array (Array String)
+emptyBoard =
+  ((repeat sideLength << repeat sideLength) "")
+
 init : (Model, Cmd Msg)
 init =
   (model, Cmd.none)
@@ -34,7 +38,7 @@ model : Model
 model =
   {
     sideLength = sideLength
-  , boardState = ((repeat sideLength << repeat sideLength) "")
+  , boardState = emptyBoard
   , playerOneMarker = "X"
   , playerTwoMarker = "O"
   , gameType = playerAIType
@@ -42,10 +46,11 @@ model =
   }
 
 type Msg
-  = Mark Int Int
-  | PlayRound Int Int
+  = StartNewGame
   | BeginPlayerPlayer
   | BeginPlayerAI
+  | Mark Int Int
+  | PlayRound Int Int
 
 subscriptions : Model -> Sub Msg
 subscriptions model =

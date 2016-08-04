@@ -6,7 +6,7 @@ import Html.Events exposing (..)
 import Model exposing (..)
 import Array exposing (..)
 import String exposing (isEmpty)
-import Game exposing (gameOver)
+import Game exposing (gameOver, winner)
 import Board exposing (activePlayer)
 
 view : Model -> Html Msg
@@ -18,10 +18,18 @@ view model =
             [(gameTypeMessage model)]
       , div [] [
           if (gameOver model.boardState) then
-          div [ (attribute "id" "game-over-banner")]
-              [text "Game Over."]
+            div[(attribute "id" "game-over-banner")] [
+              div [] [
+                  (text "Game Over, ")
+                , (getGameOverMessage model.boardState)
+              ]
+              , button
+                [(attribute "class" "game-type-choice")
+               , (attribute "id" "start-new-game")
+               , onClick StartNewGame]
+                [(text "Start New Game")]]
           else (getBoard model)
-      ]
+          ]
     ]
   else splashScreen model
 
@@ -52,6 +60,11 @@ gameTypeMessage model =
         h3 [] [text "Game Type: Player vs. Computer"],
         h4 [] [text "Please give the computer time to choose its spot."]]
 
+getGameOverMessage : Array (Array String) -> Html Msg
+getGameOverMessage board =
+  case (winner board) of
+  Just winningMarker -> (text ("Winner: " ++ winningMarker))
+  Nothing -> (text "Cat's Game")
 
 getBoard : Model -> Html Msg
 getBoard model =

@@ -8,6 +8,10 @@ update : Msg -> Model -> (Model, Cmd Msg)
 update message model =
   let activePlayerMarker = activePlayer model.boardState model.playerOneMarker model.playerTwoMarker in
   case message of
+    StartNewGame ->
+      { model | activeGame = False, boardState = Model.emptyBoard }
+      ! []
+
     BeginPlayerPlayer ->
       { model | activeGame = True, gameType = playerPlayerType }
       ! []
