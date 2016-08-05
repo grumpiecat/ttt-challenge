@@ -17,9 +17,14 @@ then navigate to ```http://localhost:8080```
 
 Make sure program is running locally (```npm start```)
 
-In one tab, start selenium server:
+Install the selenium-standalone package if you don't already have it:
 
-    java -jar selenium-server-standalone-2.53.1.jar wdio.conf.js
+    npm install -g selenium-standalone
+
+In one tab, install and start a standalone server:
+
+    selenium-standalone install
+    selenium-standalone start
 
 Then in another run:
 
