@@ -21,6 +21,8 @@ type alias Model =
   , playerTwoMarker : String
   , gameType : GameType
   , activeGame : Bool
+  , loading : Bool
+  , turnWarning : Bool
   }
 
 sideLength : Int
@@ -43,14 +45,18 @@ model =
   , playerTwoMarker = "O"
   , gameType = playerAIType
   , activeGame = False
+  , loading = False
+  , turnWarning = False
   }
 
 type Msg
   = StartNewGame
   | BeginPlayerPlayer
   | BeginPlayerAI
-  | Mark Int Int
-  | PlayRound Int Int
+  | SingleMove Int Int
+  | PlayerMoveVsAI Int Int
+  | AIMove
+  | OutOfTurnWarning
 
 subscriptions : Model -> Sub Msg
 subscriptions model =

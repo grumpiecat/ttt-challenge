@@ -28,11 +28,16 @@ updateTests =
         <| assert (((fst (update BeginPlayerAI model)).activeGame == True)
                   && ((fst (update BeginPlayerAI model)).gameType == playerAIType))
 
-    , test "PlayRound action places player one and two on the board"
-        <| let updatedBoard = ((fst (update (PlayRound 0 2) model)).boardState |> flattenBoard |> toList) in
-          assert ((List.member p1 updatedBoard) && (List.member p2 updatedBoard))
+    , test "PlayerMoveVsAI places player one on the board if they are the active player"
+        <| let updatedBoard = ((fst (update (PlayerMoveVsAI 0 2) model)).boardState |> flattenBoard |> toList) in
+          assert (List.member p1 updatedBoard)
 
-    , test "Mark action places only the active player on the board"
-        <| let updatedBoard = ((fst (update (Mark 2 2) model)).boardState |> flattenBoard |> toList) in
+    , test "PlayerMoveVsAI does not place player one on the board if they are not the active player"
+        <| let existingModel = { model | boardState = (makeBoard [[p1, "", ""], ["", "", ""], ["", "", ""]]) } in
+             let updatedBoard = ((fst (update (PlayerMoveVsAI 0 2) existingModel)).boardState |> flattenBoard |> toList) in
+               assertEqual ((List.filter (\n -> n == p1) updatedBoard) |> List.length) 1
+
+    , test "SingleMove action places only the active player on the board"
+        <| let updatedBoard = ((fst (update (SingleMove 2 2) model)).boardState |> flattenBoard |> toList) in
           assert ((List.member p1 updatedBoard) && (not (List.member p2 updatedBoard)))
     ]

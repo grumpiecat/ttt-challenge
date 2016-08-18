@@ -3,6 +3,8 @@ module Update exposing (..)
 import Model exposing (..)
 import AI
 import Board exposing (..)
+import Task
+import Process
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update message model =
@@ -20,12 +22,21 @@ update message model =
       { model | activeGame = True, gameType = playerAIType }
       ! []
 
-    Mark row col ->
+    SingleMove row col ->
       { model | boardState = fillSpace row col activePlayerMarker model.boardState }
       ! []
 
-    PlayRound row col ->
-      let playersChoiceBoard = fillSpace row col activePlayerMarker model.boardState in
-        let aiChoice = AI.chooseMove model.playerTwoMarker playersChoiceBoard in
-          { model | boardState = fillSpace (fst aiChoice) (snd aiChoice) model.playerTwoMarker playersChoiceBoard }
-          ! []
+    PlayerMoveVsAI row col ->
+      if activePlayerMarker == model.playerOneMarker then
+        let playersChoiceBoard = fillSpace row col activePlayerMarker model.boardState in
+        ({ model | boardState = playersChoiceBoard, loading = True},
+          Task.map2 (\_ b -> b) (Process.sleep 10) (Task.succeed AIMove) |> Task.perform identity identity)
+      else (model, Cmd.none)
+
+    AIMove ->
+      let choice = AI.chooseMove activePlayerMarker model.boardState in
+        let updatedBoard = fillSpace (fst choice) (snd choice) activePlayerMarker model.boardState in
+        ({ model | loading = False, boardState = updatedBoard }, Cmd.none)
+
+    OutOfTurnWarning ->
+      (Debug.log "OOTW" { model | turnWarning = True }, Cmd.none)
