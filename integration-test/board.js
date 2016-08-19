@@ -37,7 +37,7 @@ describe("Game Board", function() {
     });
   });
 
-  describe("Player vs AI chosen", function() {
+  describe("Player vs AI Game", function() {
     beforeEach(function() {
       browser.click("#player-ai");
     });
@@ -55,6 +55,22 @@ describe("Game Board", function() {
       }, 20000, 'expected ai choice to be made after 20s');
 
       assert.equal(browser.getText("#space-4"), playerTwo);
+    });
+
+    it("does not display the board while the AI is choosing", function() {
+      browser.click("#space-0");
+      assert(browser.isVisible("#game-board") == false)
+    });
+
+    it("player cannot make second move before AI is done choosing", function () {
+      browser.click("#space-0");
+      browser.click("#space-1");
+
+      browser.waitUntil(function () {
+        return browser.getText("#space-4") ==  playerTwo;
+      }, 20000, 'expected ai choice to be made after 20s');
+
+      assert.equal(browser.getText("#space-1"), "");
     });
   });
 });

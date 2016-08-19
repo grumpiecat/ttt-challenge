@@ -1,7 +1,7 @@
 module View exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (attribute, style)
+import Html.Attributes exposing (attribute, style, src)
 import Html.Events exposing (..)
 import Model exposing (..)
 import Array exposing (..)
@@ -11,27 +11,34 @@ import Board exposing (activePlayer)
 
 view : Model -> Html Msg
 view model =
-  if (model.activeGame == True) then
-    div [] [
-      h1 [] [text "Tic Tac Toe!"]
-      , div [(attribute "id" "game-type-message")]
-            [(gameTypeMessage model)]
-      , div [] [
+  if model.loading then
+    div [(attribute "id" "loading-screen")] [
+      h1 [] [text "loading computer move..."]
+    , img [ attribute "id" "thinking-face"
+      ,src "http://emojipedia-us.s3.amazonaws.com/cache/06/a1/06a11e277d6f0c78eea30e3cecf53de7.png"] []
+    ]
+  else
+    if (model.activeGame == True) then
+      div [] [
+        h1 [] [text "Tic Tac Toe!"]
+        , div [(attribute "id" "game-type-message")]
+              [(gameTypeMessage model)]
+        , div [] [
           if (gameOver model.boardState) then
             div[(attribute "id" "game-over-banner")] [
               div [] [
-                  (text "Game Over, ")
-                , (getGameOverMessage model.boardState)
+                (text "Game Over, ")
+               ,(getGameOverMessage model.boardState)
               ]
               , button
                 [(attribute "class" "game-type-choice")
-               , (attribute "id" "start-new-game")
-               , onClick StartNewGame]
+              , (attribute "id" "start-new-game")
+              , onClick StartNewGame]
                 [(text "Start New Game")]]
           else (getBoard model)
           ]
-    ]
-  else splashScreen model
+      ]
+    else splashScreen model
 
 splashScreen : Model -> Html Msg
 splashScreen model =
@@ -94,8 +101,8 @@ getSpaceInnerHTML row col model =
       (attribute "class" "board-space"),
       onClick
         (if (model.gameType == playerPlayerType)
-        then (Mark row col)
-        else (PlayRound row col))
+        then (SingleMove row col)
+        else (PlayerMoveVsAI row col))
     ]
     [(text (getSpaceText cellID model.boardState))]
   else
